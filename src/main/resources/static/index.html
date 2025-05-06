@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Convertir DOC a PDF</title>
+</head>
+<body>
+<h2>Sube un archivo DOC/DOCX para convertirlo a PDF</h2>
+<input type="file" id="fileInput">
+<button onclick="uploadFile()">Convertir a PDF</button>
+
+<script>
+    function uploadFile() {
+        const fileInput = document.getElementById("fileInput");
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append("file", file);
+
+        fetch("/api/files/convert", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "converted.pdf";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        })
+        .catch(error => console.error("Error:", error));
+    }
+</script>
+</body>
+</html>
